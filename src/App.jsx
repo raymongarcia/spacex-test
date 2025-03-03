@@ -54,21 +54,20 @@ function App() {
   }, [search]);
 
   useEffect(() => {
-    fetchLaunches();
-  }, [page, fetchLaunches]);
-
-  useEffect(() => {
     if (search) {
       searchLaunches();
     } else {
       fetchLaunches();
     }
-  }, [search, fetchLaunches, searchLaunches]);
+  }, [page, search, fetchLaunches, searchLaunches]);
 
   const lastLaunchRef = (node) => {
     if (loading) return;
     if (observer.current) observer.current.disconnect();
+    console.log('observer', observer.current);
     observer.current = new IntersectionObserver((entries) => {
+      console.log('entries', entries);
+      console.log('hasMore', hasMore);
       if (entries[0].isIntersecting && hasMore) {
         setPage((prev) => prev + 1);
       }
@@ -126,6 +125,7 @@ function App() {
             setSearch(e.target.value);
             setPage(1);
             setHasMore(true);
+            setLaunches([]); // Reset launches when a new search query is entered
           }}
           className="search-box"
           aria-label="Search SpaceX Launches"
